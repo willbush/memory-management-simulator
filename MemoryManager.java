@@ -133,19 +133,6 @@ class Memory {
     }
 
     /**
-     * prints a confirmation of placement
-     *
-     * @param size         node's size
-     * @param location     node's location
-     * @param timeToDepart node's Time to depart
-     */
-    private void printConfirmation(int size, int location, int timeToDepart) {
-        String format = "Segment of size %4d placed at time %4d at location %4d, departs at %4d";
-        System.out.printf(format, size, currentTime, location, timeToDepart);
-        System.out.println();
-    }
-
-    /**
      * The extra space the segment does not fill is resized to a new hole.
      *
      * @param size    the size of the original hole
@@ -163,6 +150,19 @@ class Memory {
             next = current.next;
         }
         return next;
+    }
+
+    /**
+     * prints a confirmation of placement
+     *
+     * @param size         node's size
+     * @param location     node's location
+     * @param timeToDepart node's Time to depart
+     */
+    private void printConfirmation(int size, int location, int timeToDepart) {
+        String format = "Segment of size %4d placed at time %4d at location %4d, departs at %4d";
+        System.out.printf(format, size, currentTime, location, timeToDepart);
+        System.out.println();
     }
 
     /**
@@ -239,15 +239,15 @@ class Memory {
     }
 }
 
-public class Main {
+public class MemoryManager {
     private Memory memory;
-    private int timeOfDay; // The simulated wall clock, begins with zero private
+    private int timeOfDay; // The simulated wall clock, begins with zero
     int placements; // number of placements completed, begins with zero
     private long totalSpaceTime; // the sum of the placed segmentSize(i) x segmentLifetime(i)
     private Scanner input;
 
     /* constructor that takes an InputStream to make this program testable with Junit */
-    Main(java.io.InputStream in) {
+    MemoryManager(java.io.InputStream in) {
         input = new Scanner(in);
     }
 
@@ -347,7 +347,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main program = new Main(System.in);
+        MemoryManager program = new MemoryManager(System.in);
         program.run();
     }
 }
