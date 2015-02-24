@@ -1,5 +1,3 @@
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ManagerTest {
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -38,6 +36,46 @@ public class ManagerTest {
                 "Segment of size   70 placed at time    7 at location   20, departs at   27\n" +
                 "0\t20\t11\n" +
                 "20\t70\t27\n";
+        assertEquals(expectedOutput, out.toString());
+        System.setOut(null);
+    }
+
+    @Test
+    public void canExecuteFinalGivenTest() {
+        System.setOut(new PrintStream(out));
+        String input = "N\n" +
+                "C 100\n" +
+                "A 20 10\n" +
+                "A 50 5\n" +
+                "A 70 20\n" +
+                "A 100 10\n" +
+                "A 25 5\n" +
+                "A 50 10\n" +
+                "A 25 5\n" +
+                "A 100 10\n" +
+                "A 50 10\n" +
+                "A 25 10\n" +
+                "A 100 10\n" +
+                "A 100 10\n" +
+                "P\n" +
+                "E\n";
+        MemoryManager program = getManager(input);
+        program.run();
+
+        String expectedOutput = "William Bush\n" +
+                "Segment of size   20 placed at time    1 at location    0, departs at   11\n" +
+                "Segment of size   50 placed at time    2 at location   20, departs at    7\n" +
+                "Segment of size   70 placed at time    7 at location   20, departs at   27\n" +
+                "Segment of size  100 placed at time   27 at location    0, departs at   37\n" +
+                "Segment of size   25 placed at time   37 at location    0, departs at   42\n" +
+                "Segment of size   50 placed at time   38 at location   25, departs at   48\n" +
+                "Segment of size   25 placed at time   39 at location   75, departs at   44\n" +
+                "Segment of size  100 placed at time   48 at location    0, departs at   58\n" +
+                "Segment of size   50 placed at time   58 at location    0, departs at   68\n" +
+                "Segment of size   25 placed at time   59 at location   50, departs at   69\n" +
+                "Segment of size  100 placed at time   69 at location    0, departs at   79\n" +
+                "Segment of size  100 placed at time   79 at location    0, departs at   89\n" +
+                "0\t100\t89\n";
         assertEquals(expectedOutput, out.toString());
         System.setOut(null);
     }
