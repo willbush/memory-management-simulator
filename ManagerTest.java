@@ -110,6 +110,11 @@ public class ManagerTest {
         expectedOutputForRandom(10000, 794.35);
     }
 
+    /*
+    The expected output is meant to be visually verified in part because the
+    meanOccupancy value is machine dependent. However, it should be within 1% of
+    expected value especially for large number of placements.
+     */
     private void expectedOutputForRandom(int placements, double meanOccupancy) {
         String expectedOutput = "William Bush\n" +
                 "Number of placements made =  " + placements + "\n" +
