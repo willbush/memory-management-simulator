@@ -9,6 +9,7 @@ Since no input validation was required in the spec, I have not implemented it. I
 
 Input commands and arguments are as follows:
 
+```
 Command | arguments | action
 ----------------------------
 N       |           | Prints student name
@@ -20,9 +21,10 @@ P       |           | Prints location, size, and timeOfDeparture of all
 R       | s u v w x | Creates a new Memory object of size s. Simulate
         |           | x randomly generated placements.
 E       |           | Ends the run loop, prints a newline and exits.
+```
 
 Example input:
-
+```
 N
 C 100
 A 20 10
@@ -30,24 +32,25 @@ A 50 5
 A 70 20
 P
 E
-
+```
 Example output for given input:
-
+```
 John Doe
 Segment of size   20 placed at time    1 at location    0, departs at   11
 Segment of size   50 placed at time    2 at location   20, departs at    7
 Segment of size   70 placed at time    7 at location   20, departs at   27
 0	20	11
 20	70	27
-
+```
 Example input 2:
-
+```
 N
 R 100 5 25 20 10000
 E
-
+```
 Example output 2:
-
+```
 John Doe
 Number of placements made =  10000
 Mean occupancy of memory =    74.86
+```
