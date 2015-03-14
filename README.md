@@ -14,12 +14,13 @@ Command | arguments | action
 ----------------------------
 N       |           | Prints student name
 C       | s         | Create a Memory object of size s
-A       | u v       | Add a segment of size u placed at time v
+A       | s t       | Add a segment of size s placed with lifetime t
         |           | and print a confirmation record
 P       |           | Prints location, size, and timeOfDeparture of all
         |           | segments in memory.
-R       | s u v w x | Creates a new Memory object of size s. Simulate
-        |           | x randomly generated placements.
+R       | s l u t n | Creates a new Memory object of size s. Simulate
+        |           | n randomly generated placements with segment size of
+        |           | lower bound l, upper bound u, and max lifetime t.
 E       |           | Ends the run loop, prints a newline and exits.
 ```
 
