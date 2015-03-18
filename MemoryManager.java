@@ -1,28 +1,26 @@
 import java.util.Random;
 import java.util.Scanner;
 
-class Node {
-    boolean isSegment; // equals false if this node represents a hole
-    int location;      // position in memory of first byte
-    int size;
-    int timeToDepart;  // only valid when this node represents a Segment
-    Node next;
+abstract class Node {
+    protected boolean isSegment; // equals false if this node represents a hole
+    protected int location;      // position in memory of first byte
+    protected int size;
+    protected int timeToDepart;  // only valid when this node represents a Segment
+    protected Node next;
+}
 
-    /*
-    constructor for a Segment
-     */
-    Node(int location, int size, int timeToDepart, Node next) {
+class Segment extends Node {
+    protected Segment(int location, int size, int timeToDepart, Node next) {
         isSegment = true;
         this.location = location;
         this.size = size;
         this.timeToDepart = timeToDepart;
         this.next = next;
     }
+}
 
-    /*
-    constructor for a hole
-     */
-    Node(int location, int size, Node next) {
+class Hole extends Node {
+    protected Hole(int location, int size, Node next) {
         isSegment = false;
         this.location = location;
         this.size = size;
@@ -31,17 +29,14 @@ class Node {
 }
 
 class Memory {
-    private Node head; // First node in memory whether it is a hole or a segment.
+    private Node head;          // First node in memory whether it is a hole or a segment.
     private Node lastPlacement; // The last Segment placed, or a hole if that segment is removed.
-    private int currentTime; // simplifies recursiveRemove when current time is kept as a field.
-    private int timeToDepart; // time for newly created segment to depart
-    private boolean verbose; // print segment placement confirmation if true
+    private int currentTime;    // simplifies recursiveRemove when current time is kept as a field.
+    private int timeToDepart;   // time for newly created segment to depart
+    private boolean verbose;    // print segment placement confirmation if true
 
-    /*
-    constructor for Memory, generates a single hole Node of the given size
-     */
     Memory(int size) {
-        head = new Node(0, size, null);
+        head = new Hole(0, size, null);
         lastPlacement = head;
     }
 
@@ -67,24 +62,12 @@ class Memory {
         return placed;
     }
 
-    /**
-     * attempts to place segment starting from lastPlacement
-     *
-     * @param size size of segment to place
-     * @return true if placed
-     */
     private boolean isPlacedFromLastPlacement(int size) {
         Node current = lastPlacement.next;
         Node previous = lastPlacement;
         return place(size, current, previous, true);
     }
 
-    /**
-     * attempts to place starting from the head
-     *
-     * @param size size of segment to place
-     * @return true if placed
-     */
     private boolean isPlacedFromHead(int size) {
         Node current = head;
         Node previous = head;
@@ -122,7 +105,7 @@ class Memory {
      */
     private void placeSegment(Node current, Node previous, int size) {
         Node next = getNext(size, current);
-        Node segment = new Node(current.location, size, timeToDepart, next);
+        Node segment = new Segment(current.location, size, timeToDepart, next);
         lastPlacement = segment;
         previous.next = segment;
 
@@ -132,12 +115,9 @@ class Memory {
             printConfirmation(size, segment.location, timeToDepart);
     }
 
-    /**
-     * The extra space the segment does not fill is resized to a new hole.
-     *
-     * @param size    the size of the original hole
-     * @param current the hole the segment is being placed
-     * @return a resized hole
+    /*
+     * If there is extra space that the segment does not fill, it is resized to a new hole.
+     * otherwise gets next hole / segment.
      */
     private Node getNext(int size, Node current) {
         Node next;
@@ -145,30 +125,21 @@ class Memory {
 
         if (newHoleSize > 0) {
             int newHoleLocation = current.location + size;
-            next = new Node(newHoleLocation, newHoleSize, current.next);
+            next = new Hole(newHoleLocation, newHoleSize, current.next);
         } else {
             next = current.next;
         }
         return next;
     }
 
-    /**
-     * prints a confirmation of placement
-     *
-     * @param size         node's size
-     * @param location     node's location
-     * @param timeToDepart node's Time to depart
-     */
     private void printConfirmation(int size, int location, int timeToDepart) {
         String format = "Segment of size %4d placed at time %4d at location %4d, departs at %4d";
         System.out.printf(format, size, currentTime, location, timeToDepart);
         System.out.println();
     }
 
-    /**
+    /*
      * remove segments whose time to depart has occurred
-     *
-     * @param timeOfDay current Time of day
      */
     void removeSegmentsDueToDepart(int timeOfDay) {
         currentTime = timeOfDay;
@@ -208,13 +179,13 @@ class Memory {
 
     private Node getCombinedHole(Node x) {
         int combinedHoleSize = x.size + x.next.size;
-        Node combinedHole = new Node(x.location, combinedHoleSize, x.next.next);
+        Node combinedHole = new Hole(x.location, combinedHoleSize, x.next.next);
         fixLastPlacement(x, combinedHole);
         return combinedHole;
     }
 
     private Node getHole(Node x) {
-        Node hole = new Node(x.location, x.size, x.next);
+        Node hole = new Hole(x.location, x.size, x.next);
         fixLastPlacement(x, hole);
         return hole;
     }
@@ -241,8 +212,8 @@ class Memory {
 
 public class MemoryManager {
     private Memory memory;
-    private int timeOfDay; // The simulated wall clock, begins with zero
-    int placements; // number of placements completed, begins with zero
+    private int timeOfDay;       // The simulated wall clock, begins with zero
+    private int placements;      // number of placements completed, begins with zero
     private long totalSpaceTime; // the sum of the placed segmentSize(i) x segmentLifetime(i)
     private Scanner input;
 
@@ -252,22 +223,16 @@ public class MemoryManager {
     }
 
     void run() {
-        boolean done = false;
+        String[] tokens;
 
-        while (!done) {
+        do {
             String line = input.nextLine();
-            String[] tokens = line.split(" ");
-
-            done = handleInput(tokens);
-        }
+            tokens = line.split(" ");
+        } while (hasInput(tokens));
     }
 
-    /**
-     * @param tokens input tokens
-     * @return true if done
-     */
-    private boolean handleInput(String[] tokens) {
-        boolean done = false;
+    private boolean hasInput(String[] tokens) {
+        boolean hasInput = true;
         switch (tokens[0]) {
 
             case "N": {
@@ -299,18 +264,20 @@ public class MemoryManager {
             }
 
             case "E": {
-                done = true;
+                hasInput = false;
                 break;
             }
         }
-        return done;
+        return hasInput;
     }
 
     private void randomMemoryWalk(String[] tokens) {
         placements = timeOfDay = 0; // reset
         totalSpaceTime = 0;
+
         int size = Integer.parseInt(tokens[1]);
         memory = new Memory(size);
+
         int minSize = Integer.parseInt(tokens[2]);
         int maxSize = Integer.parseInt(tokens[3]);
         int maxLifeTime = Integer.parseInt(tokens[4]);
