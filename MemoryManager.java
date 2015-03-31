@@ -228,11 +228,11 @@ public class MemoryManager {
         do {
             String line = input.nextLine();
             tokens = line.split(" ");
-        } while (hasInput(tokens));
+            performCommands(tokens);
+        } while (hasInput(tokens[0]));
     }
 
-    private boolean hasInput(String[] tokens) {
-        boolean hasInput = true;
+    private void performCommands(String[] tokens) {
         switch (tokens[0]) {
 
             case "N": {
@@ -262,13 +262,11 @@ public class MemoryManager {
                 memory.printLayout();
                 break;
             }
-
-            case "E": {
-                hasInput = false;
-                break;
-            }
         }
-        return hasInput;
+    }
+
+    private boolean hasInput(String command) {
+        return !command.equals("E");
     }
 
     private void randomMemoryWalk(String[] tokens) {
