@@ -1,4 +1,6 @@
-﻿namespace SegmentedMemorySim
+﻿using System;
+
+namespace SegmentedMemorySim
 {
     class Memory
     {
@@ -7,7 +9,7 @@
         private int _currentTime;
         private int _timeToDepart;
 
-        Memory(int size)
+        internal Memory(int size)
         {
             _head = new Hole(0, size, null);
             _lastPlacement = _head;
@@ -147,6 +149,7 @@
         {
             return x != null && x.IsSegment && x.TimeToDepart <= _currentTime;
         }
+
         private Hole GetHole(Node x)
         {
             var hole = new Hole(x.Location, x.Size, x.Next);
@@ -158,6 +161,20 @@
         {
             if (_lastPlacement == x || _lastPlacement == x.Next)
                 _lastPlacement = hole;
+        }
+
+        public void PrintLayout()
+        {
+            var current = _head;
+
+            while (current != null)
+            {
+                if (current.IsSegment)
+                {
+                    Console.WriteLine(current.Location + "\t" + current.Size + "\t" + current.TimeToDepart);
+                }
+                current = current.Next;
+            }
         }
     }
 }
