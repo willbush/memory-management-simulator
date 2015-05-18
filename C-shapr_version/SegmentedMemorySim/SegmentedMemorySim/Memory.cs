@@ -4,9 +4,9 @@ namespace SegmentedMemorySim
 {
     internal class Memory
     {
+        private int _currentTime;
         private Node _head;
         private Node _lastPlacement;
-        private int _currentTime;
         private int _timeToDepart;
         private bool _verbose;
 
@@ -31,18 +31,8 @@ namespace SegmentedMemorySim
             var placed = false;
 
             while (current != null && !placed)
-            {
-                if (HoleIsBigEnough(size, current))
-                {
-                    PlaceSegment(current, previous, size);
-                    placed = true;
-                }
-                else
-                {
-                    previous = current;
-                    current = current.Next;
-                }
-            }
+                current = TryPlaceCurrent(size, current, ref previous, ref placed);
+
             return placed;
         }
 
@@ -53,19 +43,24 @@ namespace SegmentedMemorySim
             var placed = false;
 
             while (NotPlacedAndLastPlacementNotReached(current, placed))
-            {
-                if (HoleIsBigEnough(size, current))
-                {
-                    PlaceSegment(current, previous, size);
-                    placed = true;
-                }
-                else
-                {
-                    previous = current;
-                    current = current.Next;
-                }
-            }
+                current = TryPlaceCurrent(size, current, ref previous, ref placed);
+
             return placed;
+        }
+
+        private Node TryPlaceCurrent(int size, Node current, ref Node previous, ref bool placed)
+        {
+            if (HoleIsBigEnough(size, current))
+            {
+                PlaceSegment(current, previous, size);
+                placed = true;
+            }
+            else
+            {
+                previous = current;
+                current = current.Next;
+            }
+            return current;
         }
 
         private bool NotPlacedAndLastPlacementNotReached(Node current, bool placed)
