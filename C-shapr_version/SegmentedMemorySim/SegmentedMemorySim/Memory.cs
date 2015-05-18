@@ -2,12 +2,13 @@
 
 namespace SegmentedMemorySim
 {
-    class Memory
+    internal class Memory
     {
         private Node _head;
         private Node _lastPlacement;
         private int _currentTime;
         private int _timeToDepart;
+        private bool _verbose;
 
         internal Memory(int size)
         {
@@ -15,14 +16,15 @@ namespace SegmentedMemorySim
             _lastPlacement = _head;
         }
 
-        internal bool TryPlace(int size, int timeOfDay, int lifeTime)
+        internal bool TryPlace(int size, int timeOfDay, int lifeTime, bool verbose)
         {
             _currentTime = timeOfDay;
             _timeToDepart = timeOfDay + lifeTime;
-            return TryPlaceFromLastSegment(size) || TryPlaceFromHead(size);
+            _verbose = verbose;
+            return TryPlaceFromLastPlacement(size) || TryPlaceFromHead(size);
         }
 
-        private bool TryPlaceFromLastSegment(int size)
+        private bool TryPlaceFromLastPlacement(int size)
         {
             var current = _lastPlacement.Next;
             var previous = _lastPlacement;
@@ -46,8 +48,8 @@ namespace SegmentedMemorySim
 
         private bool TryPlaceFromHead(int size)
         {
-            var current = _lastPlacement.Next;
-            var previous = _lastPlacement;
+            var current = _head;
+            var previous = _head;
             var placed = false;
 
             while (NotPlacedAndLastPlacementNotReached(current, placed))
@@ -85,6 +87,9 @@ namespace SegmentedMemorySim
 
             if (segment.Location == 0)
                 _head = segment;
+
+            if (_verbose)
+                PrintConfirmation(size, segment.Location, _timeToDepart);
         }
 
         private Node GetNext(int size, Node current)
@@ -102,6 +107,13 @@ namespace SegmentedMemorySim
                 next = current.Next;
             }
             return next;
+        }
+
+        private void PrintConfirmation(int size, int location, int timeToDepart)
+        {
+            var s = string.Format("Segment of size {0,4} placed at time {1,4} at location {2,4}, departs at {3,4}",
+                size, _currentTime, location, timeToDepart);
+            Console.WriteLine(s);
         }
 
         internal void RemoveSegmentsDueToDepart(int timeOfDay)
@@ -122,6 +134,7 @@ namespace SegmentedMemorySim
             {
                 var hole = GetHole(x);
                 hole.Next = RecursiveRemove(x.Next);
+                return hole;
             }
             x.Next = RecursiveRemove(x.Next);
             return x;

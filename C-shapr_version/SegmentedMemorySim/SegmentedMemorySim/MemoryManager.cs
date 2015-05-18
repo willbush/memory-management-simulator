@@ -1,18 +1,21 @@
 ﻿using System;
+using System.IO;
 
 namespace SegmentedMemorySim
 {
-    internal class MemoryManager
+    public class MemoryManager
     {
         private Memory _memory;
         private int _timeOfDay;
         private int _numOfPlacements;
-        private long _totalSpaceTime;
+        private decimal _totalSpaceTime;
 
-        internal MemoryManager()
-        { }
+        public MemoryManager(StreamReader sr)
+        {
+            Console.SetIn(sr);
+        }
 
-        internal void run()
+        public void Run()
         {
             string[] tokens;
 
@@ -46,7 +49,7 @@ namespace SegmentedMemorySim
                 case "A":
                     size = Int32.Parse(tokens[1]);
                     int lifeTime = Int32.Parse(tokens[2]);
-                    AddSegment(size, lifeTime);
+                    AddSegment(size, lifeTime, true);
                     break;
 
                 case "R":
@@ -82,17 +85,17 @@ namespace SegmentedMemorySim
                 int newSegLifeTime = r.Next(1, maxLifeTime);
                 _totalSpaceTime += newSegSize * newSegLifeTime;
 
-                AddSegment(newSegSize, newSegLifeTime);
+                AddSegment(newSegSize, newSegLifeTime, false);
             }
             PrintRandomResults();
         }
 
-        private void AddSegment(int size, int lifeTime)
+        private void AddSegment(int size, int lifeTime, bool verbose)
         {
             _timeOfDay++;
             _memory.RemoveSegmentsDueToDepart(_timeOfDay);
 
-            while (!_memory.TryPlace(size, _timeOfDay, lifeTime))
+            while (!_memory.TryPlace(size, _timeOfDay, lifeTime, verbose))
             {
                 _timeOfDay++;
                 _memory.RemoveSegmentsDueToDepart(_timeOfDay);
@@ -102,9 +105,9 @@ namespace SegmentedMemorySim
 
         private void PrintRandomResults()
         {
-            double meanOccupancy = _totalSpaceTime / _timeOfDay;
-            Console.WriteLine("Number of placements made = {F6}", _numOfPlacements);
-            Console.WriteLine("Mean Occupancy of memory = {F2}", meanOccupancy);
+            decimal meanOccupancy = _totalSpaceTime / _timeOfDay;
+            Console.WriteLine(@"Number of placements made = {0,6}", _numOfPlacements);
+            Console.WriteLine(@"Mean Occupancy of memory = {0:00.##}", meanOccupancy);
         }
     }
 }

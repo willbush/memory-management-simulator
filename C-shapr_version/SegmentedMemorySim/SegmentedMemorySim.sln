@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SegmentedMemorySim", "SegmentedMemorySim\SegmentedMemorySim.csproj", "{6657FB65-513A-4BE4-AE48-E70E3FF0A7A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemorySimTestSuite", "UnitTestProject1\MemorySimTestSuite.csproj", "{0D979C8F-40BF-42E4-9A31-8A2B419197AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6657FB65-513A-4BE4-AE48-E70E3FF0A7A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6657FB65-513A-4BE4-AE48-E70E3FF0A7A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6657FB65-513A-4BE4-AE48-E70E3FF0A7A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D979C8F-40BF-42E4-9A31-8A2B419197AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D979C8F-40BF-42E4-9A31-8A2B419197AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D979C8F-40BF-42E4-9A31-8A2B419197AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D979C8F-40BF-42E4-9A31-8A2B419197AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
